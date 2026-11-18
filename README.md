@@ -55,11 +55,7 @@ Layanan akan aktif di:
 ### 2. Menjalankan Secara Lokal (Gradle)
 
 1. Pastikan PostgreSQL aktif pada port `5432` dengan database `ecommerce_db`.
-2. Jalankan test:
-   ```bash
-   ./gradlew test
-   ```
-3. Jalankan masing-masing service di terminal terpisah:
+2. Jalankan masing-masing service di terminal terpisah:
    ```bash
    ./gradlew :customer-service:bootRun
    ./gradlew :product-service:bootRun

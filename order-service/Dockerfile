@@ -7,6 +7,7 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY product-service product-service
 COPY order-service order-service
+COPY customer-service customer-service
 
 RUN chmod +x ./gradlew
 RUN ./gradlew :order-service:bootJar --no-daemon

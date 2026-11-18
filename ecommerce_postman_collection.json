@@ -1,0 +1,430 @@
+﻿{
+    "item":  [
+                 {
+                     "name":  "Customer Service (:8083)",
+                     "item":  [
+                                  {
+                                      "name":  "GET All Customers",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8083/api/customers",
+                                                                  "port":  "8083",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "customers"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Customer by ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8083/api/customers/1",
+                                                                  "port":  "8083",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "customers",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Customer by Email",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "port":  "8083",
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "email",
+                                                                                    "value":  "alice.johnson@example.com"
+                                                                                }
+                                                                            ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "customers",
+                                                                               "by-email"
+                                                                           ],
+                                                                  "raw":  "http://localhost:8083/api/customers/by-email?email=alice.johnson@example.com",
+                                                                  "protocol":  "http"
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "POST Create Customer",
+                                      "request":  {
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8083/api/customers",
+                                                                  "port":  "8083",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "customers"
+                                                                           ]
+                                                              },
+                                                      "method":  "POST",
+                                                      "body":  {
+                                                                   "raw":  "{\r\n    \"email\":  \"budi.santoso@example.com\",\r\n    \"name\":  \"Budi Santoso\",\r\n    \"phone\":  \"08123456789\",\r\n    \"address\":  \"Jl. Sudirman No. 10, Jakarta\"\r\n}",
+                                                                   "mode":  "raw"
+                                                               },
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ]
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Product Service (:8081)",
+                     "item":  [
+                                  {
+                                      "name":  "GET All Products",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8081/api/products",
+                                                                  "port":  "8081",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Products with Category",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "port":  "8081",
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "category",
+                                                                                    "value":  "ELECTRONICS"
+                                                                                }
+                                                                            ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products"
+                                                                           ],
+                                                                  "raw":  "http://localhost:8081/api/products?category=ELECTRONICS",
+                                                                  "protocol":  "http"
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Product by ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8081/api/products/1",
+                                                                  "port":  "8081",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "POST Add Product",
+                                      "request":  {
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8081/api/products",
+                                                                  "port":  "8081",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products"
+                                                                           ]
+                                                              },
+                                                      "method":  "POST",
+                                                      "body":  {
+                                                                   "raw":  "{\r\n    \"name\":  \"Bluetooth Portable Speaker\",\r\n    \"sku\":  \"ELEC-SPKR-001\",\r\n    \"weightKg\":  0.5,\r\n    \"price\":  350000,\r\n    \"stock\":  25,\r\n    \"category\":  \"ELECTRONICS\"\r\n}",
+                                                                   "mode":  "raw"
+                                                               },
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Top Selling Products per Category (Window Function)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "port":  "8081",
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "topRank",
+                                                                                    "value":  "3"
+                                                                                }
+                                                                            ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "analytics",
+                                                                               "top-ranked"
+                                                                           ],
+                                                                  "raw":  "http://localhost:8081/api/products/analytics/top-ranked?topRank=3",
+                                                                  "protocol":  "http"
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Count Products with Category (Stream)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8081/api/products/analytics/category-counts",
+                                                                  "port":  "8081",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "analytics",
+                                                                               "category-counts"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Order Service (:8082)",
+                     "item":  [
+                                  {
+                                      "name":  "POST Checkout",
+                                      "request":  {
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8082/api/orders/checkout",
+                                                                  "port":  "8082",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "checkout"
+                                                                           ]
+                                                              },
+                                                      "method":  "POST",
+                                                      "body":  {
+                                                                   "raw":  "{\r\n    \"shippingType\":  \"EXPRESS\",\r\n    \"customerId\":  1,\r\n    \"items\":  [\r\n                  {\r\n                      \"productId\":  2,\r\n                      \"quantity\":  1\r\n                  },\r\n                  {\r\n                      \"productId\":  6,\r\n                      \"quantity\":  2\r\n                  }\r\n              ]\r\n}",
+                                                                   "mode":  "raw"
+                                                               },
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET All Orders",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8082/api/orders",
+                                                                  "port":  "8082",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Order by ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8082/api/orders/1",
+                                                                  "port":  "8082",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Sales Stream Analytics",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "protocol":  "http",
+                                                                  "raw":  "http://localhost:8082/api/orders/analytics/streams",
+                                                                  "port":  "8082",
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "analytics",
+                                                                               "streams"
+                                                                           ]
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Top Selling Products per Category (CTE + Window Function)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "port":  "8082",
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "topN",
+                                                                                    "value":  "3"
+                                                                                }
+                                                                            ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "analytics",
+                                                                               "best-sellers"
+                                                                           ],
+                                                                  "raw":  "http://localhost:8082/api/orders/analytics/best-sellers?topN=3",
+                                                                  "protocol":  "http"
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  },
+                                  {
+                                      "name":  "GET Top Customer / VIP (JOIN + HAVING)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "url":  {
+                                                                  "port":  "8082",
+                                                                  "host":  [
+                                                                               "localhost"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "minOrders",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "minSpend",
+                                                                                    "value":  "1000000"
+                                                                                }
+                                                                            ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "analytics",
+                                                                               "vip-customers"
+                                                                           ],
+                                                                  "raw":  "http://localhost:8082/api/orders/analytics/vip-customers?minOrders=1\u0026minSpend=1000000",
+                                                                  "protocol":  "http"
+                                                              },
+                                                      "header":  [
+
+                                                                 ]
+                                                  }
+                                  }
+                              ]
+                 }
+             ],
+    "info":  {
+                 "description":  "Complete Postman collection for E-Commerce Microservices (Customer, Product, Order)",
+                 "name":  "E-Commerce Microservices",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             }
+}
