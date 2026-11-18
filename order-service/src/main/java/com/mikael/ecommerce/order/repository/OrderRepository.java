@@ -20,21 +20,26 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByStatus(OrderStatus status);
 
-    List<Order> findByCustomerEmailIgnoreCase(String customerEmail);
+    List<Order> findByCustomerId(Long customerId);
+
+    List<Order> findByCustomer_EmailIgnoreCase(String customerEmail);
+
+    @Query(value = "SELECT nextval('order_number_seq')", nativeQuery = true)
+    Long getNextOrderSequence();
 
     @Query(value = """
             WITH ProductSales AS (
-                SELECT oi.product_id AS productId,
-                       oi.sku AS sku,
-                       oi.product_name AS productName,
-                       oi.category AS category,
-                       SUM(oi.quantity) AS totalSold,
-                       SUM(oi.subtotal) AS totalRevenue,
-                       DENSE_RANK() OVER (PARTITION BY oi.category ORDER BY SUM(oi.quantity) DESC) AS categoryRank
-                FROM order_items oi
-                JOIN orders o ON oi.order_id = o.id
+                SELECT od.product_id AS productId,
+                       od.sku AS sku,
+                       od.product_name AS productName,
+                       od.category AS category,
+                       SUM(od.quantity) AS totalSold,
+                       SUM(od.subtotal) AS totalRevenue,
+                       DENSE_RANK() OVER (PARTITION BY od.category ORDER BY SUM(od.quantity) DESC) AS categoryRank
+                FROM order_details od
+                JOIN orders o ON od.order_id = o.id
                 WHERE o.status = 'COMPLETED'
-                GROUP BY oi.product_id, oi.sku, oi.product_name, oi.category
+                GROUP BY od.product_id, od.sku, od.product_name, od.category
             )
             SELECT productId, sku, productName, category, totalSold, totalRevenue, categoryRank
             FROM ProductSales
@@ -44,14 +49,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<BestSellerProjection> findBestSellerProductsPerCategory(@Param("topN") int topN);
 
     @Query(value = """
-            SELECT o.customer_email AS customerEmail,
+            SELECT c.id AS customerId,
+                   c.name AS customerName,
+                   c.email AS customerEmail,
                    COUNT(o.id) AS totalCompletedOrders,
                    SUM(o.total_amount) AS totalSpent,
                    AVG(o.total_amount) AS averageOrderValue,
                    MAX(o.created_at) AS lastOrderDate
-            FROM orders o
+            FROM customers c
+            JOIN orders o ON o.customer_id = c.id
             WHERE o.status = 'COMPLETED'
-            GROUP BY o.customer_email
+            GROUP BY c.id, c.name, c.email
             HAVING COUNT(o.id) >= :minOrders AND SUM(o.total_amount) >= :minSpend
             ORDER BY totalSpent DESC
             """, nativeQuery = true)

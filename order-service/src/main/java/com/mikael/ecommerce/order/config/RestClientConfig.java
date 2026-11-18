@@ -16,6 +16,9 @@ public class RestClientConfig {
     @Value("${services.product.url:http://localhost:8081}")
     private String productServiceUrl;
 
+    @Value("${services.customer.url:http://localhost:8083}")
+    private String customerServiceUrl;
+
     @Bean
     public RestClient productRestClient() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -24,6 +27,20 @@ public class RestClientConfig {
 
         return RestClient.builder()
                 .baseUrl(productServiceUrl)
+                .requestFactory(requestFactory)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    public RestClient customerRestClient() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(Duration.ofSeconds(5));
+        requestFactory.setReadTimeout(Duration.ofSeconds(10));
+
+        return RestClient.builder()
+                .baseUrl(customerServiceUrl)
                 .requestFactory(requestFactory)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

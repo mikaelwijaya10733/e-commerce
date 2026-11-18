@@ -2,7 +2,7 @@ package com.mikael.ecommerce.order.service;
 
 import com.mikael.ecommerce.order.dto.OrderAnalyticsResponse;
 import com.mikael.ecommerce.order.entity.Order;
-import com.mikael.ecommerce.order.entity.OrderItem;
+import com.mikael.ecommerce.order.entity.OrderDetail;
 import com.mikael.ecommerce.order.entity.OrderStatus;
 import com.mikael.ecommerce.order.repository.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class OrderAnalyticsStreamTest {
                 .status(OrderStatus.COMPLETED)
                 .totalAmount(new BigDecimal("1500000.00"))
                 .build();
-        order1.addItem(OrderItem.builder()
+        order1.addOrderDetail(OrderDetail.builder()
                 .category("ELECTRONICS")
                 .quantity(2)
                 .build());
@@ -46,7 +46,7 @@ class OrderAnalyticsStreamTest {
                 .status(OrderStatus.COMPLETED)
                 .totalAmount(new BigDecimal("350000.00"))
                 .build();
-        order2.addItem(OrderItem.builder()
+        order2.addOrderDetail(OrderDetail.builder()
                 .category("BOOKS")
                 .quantity(1)
                 .build());

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class OrderResponse {
     private Long id;
     private String orderNumber;
+    private CustomerResponse customer;
     private String customerEmail;
     private String shippingType;
     private BigDecimal shippingFee;
@@ -24,23 +25,29 @@ public class OrderResponse {
     private BigDecimal totalWeightKg;
     private BigDecimal totalAmount;
     private OrderStatus status;
-    private List<OrderItemResponse> items;
+    private List<OrderDetailResponse> details;
+    private List<OrderDetailResponse> items;
     private LocalDateTime createdAt;
 
     public static OrderResponse fromEntity(Order order) {
+        CustomerResponse customerResp = CustomerResponse.fromEntity(order.getCustomer());
+        List<OrderDetailResponse> detailResponses = order.getOrderDetails().stream()
+                .map(OrderDetailResponse::fromEntity)
+                .collect(Collectors.toList());
+
         return OrderResponse.builder()
                 .id(order.getId())
                 .orderNumber(order.getOrderNumber())
-                .customerEmail(order.getCustomerEmail())
+                .customer(customerResp)
+                .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : null)
                 .shippingType(order.getShippingType())
                 .shippingFee(order.getShippingFee())
                 .itemsSubtotal(order.getItemsSubtotal())
                 .totalWeightKg(order.getTotalWeightKg())
                 .totalAmount(order.getTotalAmount())
                 .status(order.getStatus())
-                .items(order.getItems().stream()
-                        .map(OrderItemResponse::fromEntity)
-                        .collect(Collectors.toList()))
+                .details(detailResponses)
+                .items(detailResponses)
                 .createdAt(order.getCreatedAt())
                 .build();
     }

@@ -1,8 +1,10 @@
 package com.mikael.ecommerce.order.config;
 
+import com.mikael.ecommerce.order.entity.Customer;
 import com.mikael.ecommerce.order.entity.Order;
-import com.mikael.ecommerce.order.entity.OrderItem;
+import com.mikael.ecommerce.order.entity.OrderDetail;
 import com.mikael.ecommerce.order.entity.OrderStatus;
+import com.mikael.ecommerce.order.repository.CustomerRepository;
 import com.mikael.ecommerce.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.List;
 public class OrderDataSeeder implements CommandLineRunner {
 
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public void run(String... args) {
@@ -26,9 +29,33 @@ public class OrderDataSeeder implements CommandLineRunner {
             return;
         }
 
+        Customer alice = customerRepository.findByEmailIgnoreCase("alice.johnson@example.com")
+                .orElseGet(() -> customerRepository.save(Customer.builder()
+                        .name("Alice Johnson")
+                        .email("alice.johnson@example.com")
+                        .phone("08123456789")
+                        .address("Jl. Sudirman No. 10, Jakarta")
+                        .build()));
+
+        Customer bob = customerRepository.findByEmailIgnoreCase("bob.smith@example.com")
+                .orElseGet(() -> customerRepository.save(Customer.builder()
+                        .name("Bob Smith")
+                        .email("bob.smith@example.com")
+                        .phone("08129876543")
+                        .address("Jl. Gatot Subroto No. 45, Bandung")
+                        .build()));
+
+        Customer charlie = customerRepository.findByEmailIgnoreCase("charlie.brown@example.com")
+                .orElseGet(() -> customerRepository.save(Customer.builder()
+                        .name("Charlie Brown")
+                        .email("charlie.brown@example.com")
+                        .phone("08125556677")
+                        .address("Jl. Diponegoro No. 8, Surabaya")
+                        .build()));
+
         Order order1 = Order.builder()
                 .orderNumber("ORD-ELEC-1001")
-                .customerEmail("alice.johnson@example.com")
+                .customer(alice)
                 .shippingType("EXPRESS")
                 .shippingFee(new BigDecimal("40000.00"))
                 .itemsSubtotal(new BigDecimal("12500000.00"))
@@ -36,7 +63,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .totalAmount(new BigDecimal("12540000.00"))
                 .status(OrderStatus.COMPLETED)
                 .build();
-        order1.addItem(OrderItem.builder()
+        order1.addOrderDetail(OrderDetail.builder()
                 .productId(1L)
                 .sku("ELEC-LPTP-001")
                 .productName("Laptop Ultra 14-inch")
@@ -49,7 +76,7 @@ public class OrderDataSeeder implements CommandLineRunner {
 
         Order order2 = Order.builder()
                 .orderNumber("ORD-FASH-1002")
-                .customerEmail("alice.johnson@example.com")
+                .customer(alice)
                 .shippingType("REGULAR")
                 .shippingFee(new BigDecimal("20000.00"))
                 .itemsSubtotal(new BigDecimal("1030000.00"))
@@ -57,7 +84,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .totalAmount(new BigDecimal("1050000.00"))
                 .status(OrderStatus.COMPLETED)
                 .build();
-        order2.addItem(OrderItem.builder()
+        order2.addOrderDetail(OrderDetail.builder()
                 .productId(4L)
                 .sku("FASH-JACK-001")
                 .productName("Waterproof Windbreaker Jacket")
@@ -67,7 +94,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .subtotal(new BigDecimal("450000.00"))
                 .unitWeightKg(new BigDecimal("0.40"))
                 .build());
-        order2.addItem(OrderItem.builder()
+        order2.addOrderDetail(OrderDetail.builder()
                 .productId(6L)
                 .sku("BOOK-JAVA-001")
                 .productName("Mastering Spring Boot & Microservices")
@@ -80,7 +107,7 @@ public class OrderDataSeeder implements CommandLineRunner {
 
         Order order3 = Order.builder()
                 .orderNumber("ORD-CRGO-1003")
-                .customerEmail("bob.smith@example.com")
+                .customer(bob)
                 .shippingType("CARGO")
                 .shippingFee(new BigDecimal("90000.00"))
                 .itemsSubtotal(new BigDecimal("3800000.00"))
@@ -88,7 +115,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .totalAmount(new BigDecimal("3890000.00"))
                 .status(OrderStatus.COMPLETED)
                 .build();
-        order3.addItem(OrderItem.builder()
+        order3.addOrderDetail(OrderDetail.builder()
                 .productId(8L)
                 .sku("FURN-CHAIR-001")
                 .productName("Ergonomic Mesh Office Chair")
@@ -98,7 +125,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .subtotal(new BigDecimal("1950000.00"))
                 .unitWeightKg(new BigDecimal("14.50"))
                 .build());
-        order3.addItem(OrderItem.builder()
+        order3.addOrderDetail(OrderDetail.builder()
                 .productId(3L)
                 .sku("ELEC-HEAD-003")
                 .productName("Noise-Cancelling Headphones")
@@ -111,7 +138,7 @@ public class OrderDataSeeder implements CommandLineRunner {
 
         Order order4 = Order.builder()
                 .orderNumber("ORD-FASH-1004")
-                .customerEmail("charlie.brown@example.com")
+                .customer(charlie)
                 .shippingType("REGULAR")
                 .shippingFee(new BigDecimal("10000.00"))
                 .itemsSubtotal(new BigDecimal("750000.00"))
@@ -119,7 +146,7 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .totalAmount(new BigDecimal("760000.00"))
                 .status(OrderStatus.COMPLETED)
                 .build();
-        order4.addItem(OrderItem.builder()
+        order4.addOrderDetail(OrderDetail.builder()
                 .productId(5L)
                 .sku("FASH-SHOE-002")
                 .productName("Ergonomic Running Shoes")
@@ -131,6 +158,6 @@ public class OrderDataSeeder implements CommandLineRunner {
                 .build());
 
         orderRepository.saveAll(List.of(order1, order2, order3, order4));
-        log.info("Successfully seeded 4 orders with order items for initial analytics.");
+        log.info("Successfully seeded 3 customers and 4 orders with order_details for analytics.");
     }
 }

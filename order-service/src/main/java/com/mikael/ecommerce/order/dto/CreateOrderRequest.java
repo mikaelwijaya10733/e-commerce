@@ -1,9 +1,9 @@
 package com.mikael.ecommerce.order.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -15,9 +15,8 @@ import java.util.List;
 @Builder
 public class CreateOrderRequest {
 
-    @NotBlank(message = "Customer email is required")
-    @Email(message = "Valid email is required")
-    private String customerEmail;
+    @NotNull(message = "Customer ID is required")
+    private Long customerId;
 
     @NotBlank(message = "Shipping type is required (REGULAR, EXPRESS, CARGO)")
     private String shippingType;

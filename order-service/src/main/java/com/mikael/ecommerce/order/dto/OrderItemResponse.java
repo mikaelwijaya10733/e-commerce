@@ -1,6 +1,6 @@
 package com.mikael.ecommerce.order.dto;
 
-import com.mikael.ecommerce.order.entity.OrderItem;
+import com.mikael.ecommerce.order.entity.OrderDetail;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,7 +21,10 @@ public class OrderItemResponse {
     private BigDecimal subtotal;
     private BigDecimal unitWeightKg;
 
-    public static OrderItemResponse fromEntity(OrderItem item) {
+    public static OrderItemResponse fromEntity(OrderDetail item) {
+        if (item == null) {
+            return null;
+        }
         return OrderItemResponse.builder()
                 .id(item.getId())
                 .productId(item.getProductId())

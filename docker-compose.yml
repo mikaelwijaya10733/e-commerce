@@ -21,6 +21,23 @@ services:
     networks:
       - ecommerce-network
 
+  customer-service:
+    build:
+      context: .
+      dockerfile: customer-service/Dockerfile
+    container_name: customer-service
+    ports:
+      - "8083:8083"
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/ecommerce_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - ecommerce-network
+
   product-service:
     build:
       context: .
@@ -50,9 +67,12 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       PRODUCT_SERVICE_URL: http://product-service:8081
+      CUSTOMER_SERVICE_URL: http://customer-service:8083
     depends_on:
       postgres-db:
         condition: service_healthy
+      customer-service:
+        condition: service_started
       product-service:
         condition: service_started
     networks:

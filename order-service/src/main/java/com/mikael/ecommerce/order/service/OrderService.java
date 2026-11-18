@@ -1,24 +1,30 @@
 package com.mikael.ecommerce.order.service;
 
+import com.mikael.ecommerce.order.client.CustomerClient;
 import com.mikael.ecommerce.order.client.ProductClient;
 import com.mikael.ecommerce.order.dto.*;
+import com.mikael.ecommerce.order.entity.Customer;
 import com.mikael.ecommerce.order.entity.Order;
-import com.mikael.ecommerce.order.entity.OrderItem;
+import com.mikael.ecommerce.order.entity.OrderDetail;
 import com.mikael.ecommerce.order.entity.OrderStatus;
+import com.mikael.ecommerce.order.repository.CustomerRepository;
 import com.mikael.ecommerce.order.repository.OrderRepository;
 import com.mikael.ecommerce.order.repository.projection.BestSellerProjection;
 import com.mikael.ecommerce.order.repository.projection.VipCustomerProjection;
 import com.mikael.ecommerce.order.strategy.ShippingFeeCalculator;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,15 +33,29 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final CustomerClient customerClient;
     private final ProductClient productClient;
     private final ShippingFeeCalculator shippingFeeCalculator;
+    private final JdbcTemplate jdbcTemplate;
+
+    @PostConstruct
+    public void initSequence() {
+        jdbcTemplate.execute("CREATE SEQUENCE IF NOT EXISTS order_number_seq START WITH 1 INCREMENT BY 1;");
+        log.info("Initialized order_number_seq in PostgreSQL.");
+    }
 
     @Transactional
     public OrderResponse checkoutOrder(CreateOrderRequest request) {
-        log.info("Starting checkout for customer: {}, items count: {}",
-                request.getCustomerEmail(), request.getItems().size());
+        log.info("Starting checkout for customerId: {}, items count: {}",
+                request.getCustomerId(), request.getItems().size());
 
-        List<OrderItem> orderItems = new ArrayList<>();
+        customerClient.getCustomerById(request.getCustomerId());
+
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + request.getCustomerId()));
+
+        List<OrderDetail> orderDetails = new ArrayList<>();
         List<OrderItemRequest> reservedItems = new ArrayList<>();
 
         try {
@@ -49,7 +69,7 @@ public class OrderService {
                 BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(itemReq.getQuantity()))
                         .setScale(2, RoundingMode.HALF_UP);
 
-                OrderItem orderItem = OrderItem.builder()
+                OrderDetail orderDetail = OrderDetail.builder()
                         .productId(product.getId())
                         .sku(product.getSku())
                         .productName(product.getName())
@@ -60,7 +80,7 @@ public class OrderService {
                         .unitWeightKg(product.getWeightKg())
                         .build();
 
-                orderItems.add(orderItem);
+                orderDetails.add(orderDetail);
             }
         } catch (Exception ex) {
             log.error("Checkout failed, initiating stock rollback: {}", ex.getMessage());
@@ -70,13 +90,13 @@ public class OrderService {
             throw new RuntimeException("Checkout failed: " + ex.getMessage(), ex);
         }
 
-        BigDecimal totalWeightKg = orderItems.stream()
+        BigDecimal totalWeightKg = orderDetails.stream()
                 .map(item -> item.getUnitWeightKg().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        BigDecimal itemsSubtotal = orderItems.stream()
-                .map(OrderItem::getSubtotal)
+        BigDecimal itemsSubtotal = orderDetails.stream()
+                .map(OrderDetail::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.HALF_UP);
 
@@ -88,11 +108,13 @@ public class OrderService {
 
         BigDecimal totalAmount = itemsSubtotal.add(shippingFee).setScale(2, RoundingMode.HALF_UP);
 
-        String orderNumber = "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        Long nextSeq = orderRepository.getNextOrderSequence();
+        String datePrefix = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String orderNumber = String.format("ORD-%s-%05d", datePrefix, nextSeq);
 
         Order order = Order.builder()
                 .orderNumber(orderNumber)
-                .customerEmail(request.getCustomerEmail())
+                .customer(customer)
                 .shippingType(request.getShippingType().toUpperCase())
                 .shippingFee(shippingFee)
                 .itemsSubtotal(itemsSubtotal)
@@ -101,13 +123,13 @@ public class OrderService {
                 .status(OrderStatus.COMPLETED)
                 .build();
 
-        for (OrderItem item : orderItems) {
-            order.addItem(item);
+        for (OrderDetail detail : orderDetails) {
+            order.addOrderDetail(detail);
         }
 
         Order savedOrder = orderRepository.save(order);
-        log.info("Order successfully created: id={}, orderNumber={}, totalAmount={}",
-                savedOrder.getId(), savedOrder.getOrderNumber(), savedOrder.getTotalAmount());
+        log.info("Order successfully created: id={}, orderNumber={}, customerId={}, totalAmount={}",
+                savedOrder.getId(), savedOrder.getOrderNumber(), customer.getId(), savedOrder.getTotalAmount());
 
         return OrderResponse.fromEntity(savedOrder);
     }

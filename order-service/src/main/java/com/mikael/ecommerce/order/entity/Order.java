@@ -24,8 +24,9 @@ public class Order {
     @Column(name = "order_number", nullable = false, unique = true, length = 64)
     private String orderNumber;
 
-    @Column(name = "customer_email", nullable = false, length = 100)
-    private String customerEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(name = "shipping_type", nullable = false, length = 30)
     private String shippingType;
@@ -48,7 +49,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<OrderItem> items = new ArrayList<>();
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -67,8 +68,20 @@ public class Order {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addItem(OrderItem item) {
-        items.add(item);
-        item.setOrder(this);
+    public void addOrderDetail(OrderDetail detail) {
+        orderDetails.add(detail);
+        detail.setOrder(this);
+    }
+
+    public void addItem(OrderDetail detail) {
+        addOrderDetail(detail);
+    }
+
+    public List<OrderDetail> getItems() {
+        return orderDetails;
+    }
+
+    public String getCustomerEmail() {
+        return customer != null ? customer.getEmail() : null;
     }
 }

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface VipCustomerProjection {
+    Long getCustomerId();
+    String getCustomerName();
     String getCustomerEmail();
     Long getTotalCompletedOrders();
     BigDecimal getTotalSpent();

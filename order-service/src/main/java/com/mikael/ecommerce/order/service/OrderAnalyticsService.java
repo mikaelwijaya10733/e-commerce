@@ -2,7 +2,7 @@ package com.mikael.ecommerce.order.service;
 
 import com.mikael.ecommerce.order.dto.OrderAnalyticsResponse;
 import com.mikael.ecommerce.order.entity.Order;
-import com.mikael.ecommerce.order.entity.OrderItem;
+import com.mikael.ecommerce.order.entity.OrderDetail;
 import com.mikael.ecommerce.order.entity.OrderStatus;
 import com.mikael.ecommerce.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +47,10 @@ public class OrderAnalyticsService {
 
         Map<String, Integer> quantitySoldByCategory = allOrders.stream()
                 .filter(o -> o.getStatus() == OrderStatus.COMPLETED)
-                .flatMap(order -> order.getItems().stream())
+                .flatMap(order -> order.getOrderDetails().stream())
                 .collect(Collectors.groupingBy(
-                        OrderItem::getCategory,
-                        Collectors.summingInt(OrderItem::getQuantity)
+                        OrderDetail::getCategory,
+                        Collectors.summingInt(OrderDetail::getQuantity)
                 ));
 
         List<String> topOrdersSortedByAmount = allOrders.stream()
